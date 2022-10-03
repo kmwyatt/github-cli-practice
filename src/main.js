@@ -6,6 +6,7 @@ const { GITHUB_ACCESS_TOKEN } = process.env;
 
 const { program } = require('commander');
 const { Octokit } = require('octokit');
+const prompts = require('prompts');
 
 program.version('0.0.1');
 
@@ -98,12 +99,23 @@ program
                         console.log(
                             `Adding ${LABEL_TOO_BIG} label to PR #${number}...`,
                         );
-                        return octokit.rest.issues.addLabels({
-                            owner: OWNER,
-                            repo: REPO,
-                            issue_number: number,
-                            labels: [LABEL_TOO_BIG],
+
+                        const response = await prompts({
+                            type: 'confirm',
+                            name: 'shouldContinue',
+                            message: `Do you really want to add label ${LABEL_TOO_BIG} to PR #${number}`,
                         });
+
+                        if (response.shouldContinue) {
+                            return octokit.rest.issues.addLabels({
+                                owner: OWNER,
+                                repo: REPO,
+                                issue_number: number,
+                                labels: [LABEL_TOO_BIG],
+                            });
+                        }
+
+                        console.log('Cancelled!');
                     }
                 }),
         );
