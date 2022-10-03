@@ -7,6 +7,7 @@ const { GITHUB_ACCESS_TOKEN } = process.env;
 const { program } = require('commander');
 const { Octokit } = require('octokit');
 const prompts = require('prompts');
+const chalk = require('chalk');
 
 program.version('0.0.1');
 
@@ -97,7 +98,9 @@ program
                     );
                     if (!labels.find((label) => label.name === LABEL_TOO_BIG)) {
                         console.log(
-                            `Adding ${LABEL_TOO_BIG} label to PR #${number}...`,
+                            chalk.greenBright(
+                                `Adding ${LABEL_TOO_BIG} label to PR #${number}...`,
+                            ),
                         );
 
                         const response = await prompts({
